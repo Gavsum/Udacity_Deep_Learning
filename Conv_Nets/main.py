@@ -1,3 +1,5 @@
+# Coding out example to gain more understanding
+
 ### Model ###
 # Image -> Conv -> MaxPool -> Conv ->
 # MaxPool -> FullConnec -> FullConnec -> Classifier
@@ -25,8 +27,8 @@ dropout = 0.75 # Probability to keep given units
 weights = {
     'wc1': tf.Variable(tf.random_normal([5,5,1,32])),
     'wc2': tf.Variable(tf.random_normal([5,5,32,64])),
-    'wd1': tf.Variable(tf.random_normal(7*7*64, 1024)),
-    'out': tf.Variable(tf.random_normal(1024, n_classes))
+    'wd1': tf.Variable(tf.random_normal([7*7*64, 1024])),
+    'out': tf.Variable(tf.random_normal([1024, n_classes]))
 }
 
 biases = {
@@ -40,7 +42,7 @@ biases = {
 def conv2d(x, W, b, strides=1):
     x = tf.nn.conv2d(x, W, strides=[1, strides, strides, 1], padding='SAME')
     x = tf.nn.bias_add(x, b)
-    return tf.nn.relu(x)x
+    return tf.nn.relu(x)
 
 # Max Pooling Conv Layer
 def maxpool2d(x, k=2):
@@ -56,13 +58,13 @@ def conv_net(x, weights, biases, dropout):
     conv2 = maxpool2d(conv2, k=2)
 
     # Fully Connected Layer (7*7*64) -> (1024)
-    fc1 = tf.reshape(conv2, [-1, weights['wd1'].get_shape().as_list[0]])
+    fc1 = tf.reshape(conv2, [-1, weights['wd1'].get_shape().as_list()[0]])
     fc1 = tf.add(tf.matmul(fc1, weights['wd1']), biases['bd1'])
     fc1 = tf.nn.relu(fc1)
     fc1 = tf.nn.dropout(fc1, dropout)
 
     # Output Layer/Class Prediction (1024) to (10)
-    out = tf.add(tf.matmul(fc1, wights['out']), biases['out'])
+    out = tf.add(tf.matmul(fc1, weights['out']), biases['out'])
     return out
 
 # TF Graph inputs
@@ -85,3 +87,48 @@ accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 init = tf.global_variables_initializer()
 
 # Launch the Graph!
+with tf.Session() as sess:
+    sess.run(init)
+
+    for epoch in range(epochs):
+
+        for batch in range(mnist.train.num_examples//batch_size):
+
+            batch_x, batch_y = mnist.train.next_batch(batch_size)
+
+            sess.run(optimizer, feed_dict={
+                x: batch_x,
+                y: batch_y,
+                keep_prob: dropout
+            })
+
+            # Calculate batch loss and accuracy
+            loss = sess.run(cost, feed_dict={
+                x: batch_x,
+                y: batch_y,
+                keep_prob: 1.
+            })
+
+            valid_acc = sess.run(accuracy, feed_dict={
+                x: mnist.validation.images[:test_valid_size],
+                y: mnist.validation.labels[:test_valid_size],
+                keep_prob: 1.    
+            })
+
+            print('Epoch {:>2}, Batch {:>3} -'
+                  'Loss: {:>10.4f} Validation Accuracy: {:.6f}'.format(
+                       epoch + 1,
+                       batch + 1,
+                       loss,
+                       valid_acc
+                    )
+            )
+
+    # Calculate Test Accuracy
+    test_acc = sess.run(accuracy, feed_dict={
+        x: mnist.test.images[:test_valid_size],
+        y: mnist.test.labels[:test_valid_size],
+        keep_prob: 1.
+    })
+
+    print('Testing Accuracy: {}'.format(test_acc))
