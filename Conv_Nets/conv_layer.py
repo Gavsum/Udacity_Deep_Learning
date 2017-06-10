@@ -21,17 +21,26 @@ def conv2d(input):
     # The shape of the filter bias is (output_depth,)
     # TODO: Define the filter weights `F_W` and filter bias `F_b`.
     # NOTE: Remember to wrap them in `tf.Variable`, they are trainable parameters after all.
-    F_W = ?
-    F_b = ?
+
+    #input_height = input.shape[1]
+    #input_weight = input.shape[2]
+
+    #new_height = (input_height - ? + 2 *P)/S+1
+
+    #print(input.shape[0])
+
+    F_W = tf.Variable(tf.random_normal([3,3,1,3]))
+    F_b = tf.Variable(tf.random_normal([3]))
     # TODO: Set the stride for each dimension (batch_size, height, width, depth)
-    strides = [?, ?, ?, ?]
+    strides = [1,1,1,1]
     # TODO: set the padding, either 'VALID' or 'SAME'.
-    padding = ?
+    padding = 'VALID'
     # https://www.tensorflow.org/versions/r0.11/api_docs/python/nn.html#conv2d
     # `tf.nn.conv2d` does not include the bias computation so we have to add it ourselves after.
     return tf.nn.conv2d(input, F_W, strides, padding) + F_b
 
 out = conv2d(X)
+print(out)
 
 
 
