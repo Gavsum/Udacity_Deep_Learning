@@ -137,9 +137,27 @@ def conv2d_maxpool(x_tensor, conv_num_outputs, conv_ksize, conv_strides, pool_ks
 
     return conv_out
 
+def flatten(x_tensor):
+
+    shape = x_tensor.get_shape().as_list()
+    dimension = np.prod(shape[1:])
+    flattened = tf.reshape(x_tensor, [-1, dimension]) 
+
+    return flattened
+
+def fully_conn(x_tensor, num_outputs):
+    """
+    Apply a fully connected layer to x_tensor using weight and bias.
+    x_tensor: A 2-D tensor where the first dimension is batch size.
+    num_outputs: The number of output that the new tensor should be.
+    return: A 2-D tensor where the second dimension is num_outputs
+    """
+
 tf.reset_default_graph()
 # tests.test_nn_image_inputs(neural_net_image_input)
 # tests.test_nn_label_inputs(neural_net_label_input)
 # tests.test_nn_keep_prob_inputs(neural_net_keep_prob_input)
 # tests.test_con_pool(conv2d_maxpool)
+# tests.test_flatten(flatten)
+test.test_fully_conn(fully_conn)
 
