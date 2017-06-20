@@ -6,6 +6,9 @@ import problem_unittests as tests
 import numpy as np
 import helper
 import pdb as pdb
+import pickle
+import tensorflow as tf
+from math import *
 
 cifar_path = "cifar-10-batches-py"
 tests.test_folder_path(cifar_path)
@@ -37,12 +40,106 @@ def one_hot_encode(x):
     return out_arr
 
 
-tests.test_normalize(normalize)
-tests.test_one_hot_encode(one_hot_encode)
+#tests.test_normalize(normalize)
+#tests.test_one_hot_encode(one_hot_encode)
 
 # Pre-process data 
-helper.preprocess_and_save_data(cifar_path, normalize, one_hot_encode)
+#helper.preprocess_and_save_data(cifar_path, normalize, one_hot_encode)
 
-# Checkpoint1
+# Checkpoint 1
 
+# Loading Pre-processed data
+valid_features, valid_labels = pickle.load(open('preprocess_validation.p', mode='rb'))
+
+
+#### Input Functions ###
+
+# Return a tensor for a batch of img input
+def neural_net_image_input(image_shape):
+    # Not sure if this is the best / most pythonic way to do this
+    new_shape = [None]
+    for p in image_shape:
+        new_shape.append(p)
+
+    return tf.placeholder(tf.float32, shape=new_shape, name='x')
+
+# Return a Tensor for a batch of label inputs
+def neural_net_label_input(n_classes):
+
+    label_shape = [None]
+    label_shape.append(n_classes)
+
+    tens = tf.placeholder(tf.float32, shape=label_shape, name="y")
+
+    return tens
+
+# Return a Tensor for keep probability
+def neural_net_keep_prob_input():
+    keeper = tf.placeholder(tf.float32, name="keep_prob")
+    return keeper
+
+
+# Conv layer with max pooling
+def conv2d_maxpool(x_tensor, conv_num_outputs, conv_ksize, conv_strides, pool_ksize, pool_strides):
+
+    # Create weight & bias using ksize, conv_outputs, & shape of x tensor
+
+    # This may limit the shapes of input tensors that this function can accept (eg: pre defined this way)
+    # Maybe recode to be more general
+    new_shape =          [
+                          conv_ksize[0],
+                          conv_ksize[1],
+                          x_tensor.shape[3].value,
+                          conv_num_outputs
+                         ]
+
+    conv_format_stride = [
+                          1,
+                          conv_strides[0], 
+                          conv_strides[1], 
+                          1
+                         ]
+
+    pool_format_stride = [
+                          1,
+                          pool_strides[0],
+                          pool_strides[1],
+                          1
+                         ]
+
+    pool_format_ksize =  [
+                          1, 
+                          pool_ksize[0], 
+                          pool_ksize[1],
+                          1
+                         ]
+    
+    weights = tf.Variable(tf.truncated_normal(new_shape))
+    bias = tf.Variable(tf.zeros(conv_num_outputs))
+
+    # Apply conv to x tensor using weights, stride & same padding
+    conv_out = tf.nn.conv2d(x_tensor, 
+                            weights, 
+                            conv_format_stride, 
+                            padding="SAME")
+
+    # Add bias
+    conv_out = tf.nn.bias_add(conv_out, bias)
+
+    # Add non linear activation
+    conv_out = tf.nn.relu(conv_out)
+
+    # Apply max pooling using pool size and strides + same padding
+    conv_out = tf.nn.max_pool(conv_out, 
+                              pool_format_ksize,
+                              pool_format_stride, 
+                              padding="SAME")
+
+    return conv_out
+
+tf.reset_default_graph()
+# tests.test_nn_image_inputs(neural_net_image_input)
+# tests.test_nn_label_inputs(neural_net_label_input)
+# tests.test_nn_keep_prob_inputs(neural_net_keep_prob_input)
+# tests.test_con_pool(conv2d_maxpool)
 
