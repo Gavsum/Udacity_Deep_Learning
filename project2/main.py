@@ -1,9 +1,10 @@
 # Probably dont need this, is for getting cifar data
-# from urllib.request import urlretrieve
+from urllib.request import urlretrieve
 from os.path import isfile, isdir
-# Unittests python file in image_classification dir
 import problem_unittests as tests
 import numpy as np
+from tqdm import tqdm
+import tarfile
 import helper
 import pdb as pdb
 import pickle
@@ -11,8 +12,29 @@ import tensorflow as tf
 from math import *
 
 cifar_path = "cifar-10-batches-py"
-tests.test_folder_path(cifar_path)
 
+# Use Floyd's cifar-10 dataset if present
+tar_gz_path = 'cifar-10-python.tar.gz'
+
+class DLProgress(tqdm):
+    last_block = 0
+
+    def hook(self, block_num=1, block_size=1, total_size=None):
+        self.total = total_size
+        self.update((block_num - self.last_block) * block_size)
+        self.last_block = block_num
+
+if not isfile(tar_gz_path):
+    with DLProgress(unit='B', unit_scale=True, miniters=1, desc='CIFAR-10 Dataset') as pbar:
+        urlretrieve(
+            'https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz',
+            tar_gz_path,
+            pbar.hook)
+
+if not isdir(cifar_path):
+    with tarfile.open(tar_gz_path) as tar:
+        tar.extractall()
+        tar.close()
 
 # Function to receive image data x, return as
 # Normalized numpy array
@@ -28,8 +50,6 @@ def normalize(x):
 # One Hot encoder
 # input = list of labels,
 # returns numpy array
-
-
 def one_hot_encode(x):
     local = np.asarray(x)
     out_arr = np.empty([local.size, 10], dtype=object)
@@ -174,7 +194,7 @@ def output(x_tensor, num_outputs):
 
     return out
 
-
+### Make this better ###
 def conv_net(x, keep_prob):
     """
     Create a convolutional neural network model
@@ -245,7 +265,19 @@ def print_stats(session, feature_batch, label_batch, cost, accuracy):
     : cost: TensorFlow cost function
     : accuracy: TensorFlow accuracy function
     """
-    
+    loss = sess.run(cost, feed_dict={
+        x: feature_batch,
+        y: label_batch,
+        keep_prob:1.
+        })
+
+    valid_acc = sess.run(accuracy, feed_dict={
+        x: valid_features,
+        y: valid_labels,
+        keep_prob: 1.
+        })
+
+    print("Loss = {0} - Accuracy = {1}".format(loss, valid_acc))
 
 
 
@@ -280,4 +312,35 @@ accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name='accuracy')
 ### ========= End Additional model stuff ========= ###
 
 #tests.test_conv_net(conv_net)
-tests.test_train_nn(train_neural_network)
+#tests.test_train_nn(train_neural_network)
+
+### Hyper Parameters
+# TODO: Tune Parameters
+epochs = 3
+batch_size = 20
+keep_probability = 0.6
+
+### Run Model on 1 batch ###
+print('Checking the Training on a Single Batch...')
+with tf.Session() as sess:
+    # Initializing the variables
+    sess.run(tf.global_variables_initializer())
+    
+    # Training cycle
+    for epoch in range(epochs):
+        batch_i = 1
+        for batch_features, batch_labels in helper.load_preprocess_training_batch(batch_i, batch_size):
+            train_neural_network(sess, optimizer, keep_probability, batch_features, batch_labels)
+        print('Epoch {:>2}, CIFAR-10 Batch {}:  '.format(epoch + 1, batch_i), end='')
+        print_stats(sess, batch_features, batch_labels, cost, accuracy)
+
+
+### TODO DO DO ####
+"""
+    Fine tune the hyper parameters
+    Start running it on aws or floyd so its faster
+    Optimize the conv net function
+        - What are the optimal sizes of the strides, pools, outputs, etc
+        - What is the optimal structure of the network itself
+
+"""
