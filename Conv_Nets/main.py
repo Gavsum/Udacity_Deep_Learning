@@ -9,6 +9,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets(".", one_hot=True, reshape=False)
 
 import tensorflow as tf
+import pdb as pdb
 
 # Hyper Params
 learning_rate = 0.00001
@@ -40,6 +41,9 @@ biases = {
 
 # Convolutional layer
 def conv2d(x, W, b, strides=1):
+
+    pdb.set_trace()
+
     x = tf.nn.conv2d(x, W, strides=[1, strides, strides, 1], padding='SAME')
     x = tf.nn.bias_add(x, b)
     return tf.nn.relu(x)
