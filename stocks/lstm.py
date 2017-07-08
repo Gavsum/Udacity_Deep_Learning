@@ -16,10 +16,10 @@ def plot_results_multiple(predicted_data, true_data, prediction_len):
     fig = plt.figure(facecolor='white')
     ax = fig.add_subplot(111)
     ax.plot(true_data, label='True Data')
-    print 'yo'
+    print('yo')
     # Pad list of predictions to shift graph
     for i, data in enumerate(predicted_data):
-        padding = [None for p in xrange(i*prediction_len)]
+        padding = [None for p in range(i*prediction_len)]
         plt.plot(padding + data, label="Prediction")
         plt.legend()
     plt.show()
@@ -31,10 +31,12 @@ def load_data(filename, seq_len, normalise_window):
     sequence_length = seq_len + 1
     result = []
     for index in range(len(data) - sequence_length):
-        result.appened(data[index: index + sequence_length])
+        result.append(data[index: index + sequence_length])
 
     if normalise_window:
         result = normalise_windows(result)
+
+    result = np.array(result)
 
     row = round(0.9 * result.shape[0])
     train = result[:int(row), :]
@@ -59,6 +61,53 @@ def normalise_windows(window_data):
 def build_model(layers):
     model = Sequential()
 
-    
+    model.add(LSTM(
+        input_dim = layers[0],
+        output_dim = layers[1],
+        return_sequences = True))
+    model.add(Dropout(0.2))
+
+    model.add(LSTM(
+        layers[2],
+        return_sequences=False))
+    model.add(Dropout(0.2))
+
+    model.add(Dense(
+        output_dim = layers[3]))
+    model.add(Activation("linear"))
+
+    start = time.time()
+    model.compile(loss="mse", optimizer="rmsprop")
+    print(("Compilation Time: {}".format(time.time() - start)))
+
+    return model
+
+def predict_point_by_point(model, data):
+    predicted = model.predict(data)
+    predicted = np.reshape(predicted, (predicted.size,))
+    return predicted
+
+def predict_sequence_full(model, data, window_size):
+    curr_frame = data[0]
+    predicted = []
+    for i in range(len(data)):
+        predicted.append(model.predict(curr_frame[newaxis,:,:])[0,0])
+        curr_frame = curr_frame[1:]
+        curr_frame = np.insert(curr_frame, [window_size-1], predicted[-1], axis=0)
+    return predicted
+
+def predict_sequences_multiple(model, data, window_size, prediction_len):
+    prediction_seqs = []
+    for i in range(len(data)//prediction_len):
+        curr_frame = data[i*prediction_len]
+        predicted = []
+        for j in range(prediction_len):
+            predicted.append(model.predict(curr_frame[newaxis,:,:])[0,0])
+            curr_frame = curr_frame[1:]
+            curr_frame = np.insert(curr_frame, [window_size-1], predicted[-1], axis=0)
+        prediction_seqs.append(predicted)
+    return prediction_seqs
+
+
 
 
