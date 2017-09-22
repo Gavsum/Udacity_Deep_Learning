@@ -5,7 +5,7 @@ This project demonstrates the use of a sequence-to-sequence model applied to an 
 #### Motivation 
 Consider that the approximate vocabulary size of an adult English speaker is ~ 20,000 words. If we want to translate any (meaningful) permutation of these with an RNN, we would need output neurons for every one of these permutations of words.
 
-![alt text](Charwise-Rnn.png "Character Wise RNN: The output of the RNN at any time step is always 1 character from a total of 26 possible characters. Its output size is fixed and its output layer is a reasonable size.")
+![alt text](Charwise-RNN.png "Character Wise RNN: The output of the RNN at any time step is always 1 character from a total of 26 possible characters. Its output size is fixed and its output layer is a reasonable size.")
 
 This is fine if we are only predicting a single output word or single output character that may come next in the sequence and we can limit our output nodes to a vocab or alphabet size, but if we desire a variable length output sequence from a variable length input sequence, the method falls short. The number of output nodes required for this would be as follows…
 
