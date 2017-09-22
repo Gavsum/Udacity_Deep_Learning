@@ -34,7 +34,7 @@ Once the model is fully trained and we want to use it with real world data we ha
 
 To view the implementation of this project, check out the Project4.ipynb file which should load a viewable version within your browser. If you wish to run the notebook yourself I have provided the remaining required files to do so in the X directory. If you want to learn more about the topics covered in this project, see links below. 
 
-[First paper introducing sequence-to-sequence models](https://arxiv.org/abs/1406.1078)
-[RNN & LSTM](https://deeplearning4j.org/lstm.html)
-[Great Seq2Seq Lecture - Quoc Le, Google](https://www.youtube.com/watch?v=G5RY_SUJih4)
-[Tensorflow Tutorial on Seq2Seq](https://www.tensorflow.org/tutorials/seq2seq)
+* [First paper introducing sequence-to-sequence models](https://arxiv.org/abs/1406.1078)
+* [RNN & LSTM](https://deeplearning4j.org/lstm.html)
+* [Great Seq2Seq Lecture - Quoc Le, Google](https://www.youtube.com/watch?v=G5RY_SUJih4)
+* [Tensorflow Tutorial on Seq2Seq](https://www.tensorflow.org/tutorials/seq2seq)
