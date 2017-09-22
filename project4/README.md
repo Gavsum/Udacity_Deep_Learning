@@ -32,7 +32,7 @@ Once the model is fully trained and we want to use it with real world data we ha
 
 ![alt text](decoders.png "Comparison of Training & Inference Decoders")
 
-To view the implementation of this project, check out the Project4.ipynb file which should load a viewable version within your browser. If you wish to run the notebook yourself I have provided the remaining required files to do so in the X directory. If you want to learn more about the topics covered in this project, see links below. 
+To view the implementation of this project, check out the Project4.ipynb file which should load a viewable version within your browser. If you wish to run the notebook yourself I have provided the remaining required files to do so along with the notebook in the zip file. If you want to learn more about the topics covered in this project, see links below. 
 
 * [First paper introducing sequence-to-sequence models](https://arxiv.org/abs/1406.1078)
 * [RNN & LSTM](https://deeplearning4j.org/lstm.html)
