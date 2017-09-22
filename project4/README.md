@@ -2,13 +2,15 @@
 
 This project demonstrates the use of a sequence-to-sequence model applied to translating from English to French.
 
-##### Motivation 
+#### Motivation 
 Consider that the approximate vocabulary size of an adult English speaker is ~ 20,000 words. If we want to translate any possible (and meaningful) combination of these words using only an [RNN](https://deeplearning4j.org/lstm.html), we would need output neurons for each and every one of these combinations of words. The number of output nodes required for this would be as follows.
 
 ![alt text](Sum.png "Number of Output neurons required")
 
 This number obviously includes many nonsensical combinations of words but even a fraction of this would be too large to train in a reasonable amount of time. So how does a sequence to sequence network solve this problem?
 
+
+#### Sequence to Sequence Networks
 A sequence-to-sequence network is made up of two RNNs. One of the RNNs is used to process the input to the network (encoder), and the second generates the output of the network (decoder). The sequence-to-sequence network can be trained to generate a sequence of vectors when fed a given sequence of input vectors. The vectors could represent images, text, anything, but in this case, we will use a small selection of English and French text.
 
 ![alt text](seq2seq1.png "Seq2Seq Model")
