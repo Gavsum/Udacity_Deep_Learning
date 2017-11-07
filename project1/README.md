@@ -38,7 +38,7 @@ After each input to the neuron has been multiplied by its relevant weighting, al
 The activation function used will shape the final output of the neuron. There are many types of activation functions such as Heaviside step, tanh, relu, sigmoid, etc., and they all shape the output in slightly different ways. These functions can be used to help “regularize” our 
 network output by scaling possible output values, eliminating negative values, etc. 
 
-![Activation Functions](https://github.com/Gavsum/Udacity_Deep_Learning/blob/master/project1/Formula.png "Activation Functions")
+![Activation Functions](https://github.com/Gavsum/Udacity_Deep_Learning/blob/master/project1/Activation_Funcs.png "Activation Functions")
 
 TODO: Bias Explanation 
     
