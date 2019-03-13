@@ -5,6 +5,9 @@ Data Set: https://archive.ics.uci.edu/ml/datasets/Bike+Sharing+Dataset
 
 Several key concepts are utilized in this project as follows...
 
+TLDR: Code is [here](https://github.com/Gavsum/Udacity_Deep_Learning/blob/master/project1/project_1.ipynb)
+
+
 #### Logistic Regression
 Logistic regression forms the basis for the implementation of all machine learning and deep learning models. Logistic regression is a method used to solve binary classification problems whereby we attempt to find the coefficients of an equation that best describes this binary classification. 
 
@@ -39,18 +42,6 @@ The activation function used will shape the final output of the neuron. There ar
 network output by scaling possible output values, eliminating negative values, etc. 
 
 ![Activation Functions](https://github.com/Gavsum/Udacity_Deep_Learning/blob/master/project1/Activation_Funcs.png "Activation Functions")
-
-TODO: Bias Explanation 
-    
-List of concepts to explain
-* Logistic Regression
-* Perceptron
-* Gradient Descent
-* Multi-layer perceptron
-* Backpropagation
-* Scaling target variables
-* Splitting the data into training, testing, and validation sets
-* Choosing some hyper parameters (modify LR .1 to .005 - .02)
 
 Links
 * Tensor Flow demo - http://playground.tensorflow.org/
